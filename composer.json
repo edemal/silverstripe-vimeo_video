@@ -1,0 +1,21 @@
+{
+	"name": "eduardma-silverstripe/vimeovideo",
+	"type": "silverstripe-module",
+	"description": "Vimeo Video Extension",
+	"license": "BSD-3-Clause",
+	"keywords": ["silverstripe", "framework"],
+	"authors": [
+		{
+			"name": "Eduard Malyj",
+			"homepage": "https://github.com/eduardma"
+		}
+	],
+	"require": {
+		"php": ">=5.3.2",
+		"composer/installers": "*",
+                "php-ffmpeg/php-ffmpeg": "~0.5",
+                "andrelohmann-silverstripe/extendedobjects": "1.6",
+                "vimeo/vimeo-api": "1.2.1"
+	},
+	"minimum-stability": "stable"
+}
