@@ -50,9 +50,7 @@ class VimeoVideoFile extends VideoFile {
                                 $video_data = $lib->request($uri);
                                 
                                 if($video_data['status'] == 200) {
-                                    
                                     $this->VimeoURI = $video_data['body']['uri'];
-
                                     $this->VimeoLink = $video_data['body']['link'];
                                     $this->VimeoEmbed = $video_data['body']['embed']['html'];
                                 }
@@ -108,6 +106,7 @@ class VimeoVideoFile extends VideoFile {
     public function createEmbed ($width, $height) {
         $width = (!$width) ? $width : $this->Width;
         $height = (!$height) ? $height : $this->Height;
+        
         
     }
 
