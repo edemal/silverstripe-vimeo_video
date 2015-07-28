@@ -14,7 +14,11 @@ class VimeoVideoFile extends VideoFile {
     private static $accessToken = "23c371cee42c5f9f5a6a46c8b7f17728";
 
     private static $db = array(
+<<<<<<< HEAD
         'VimeoURI'   =>  'Varchar',
+=======
+        'VimeoID'   =>  'Varchar',
+>>>>>>> babe4c5d6623546eec3739573529fada4e07f35f
         'VimeoLink'  =>  'Varchar',
         'VimeoEmbed' => 'HTMLText'
         
@@ -49,7 +53,10 @@ class VimeoVideoFile extends VideoFile {
                                 $video_data = $lib->request($uri);
                                 
                                 if($video_data['status'] == 200) {
+<<<<<<< HEAD
                                     $this->VimeoURI = $video_data['body']['uri'];
+=======
+>>>>>>> babe4c5d6623546eec3739573529fada4e07f35f
                                     $this->VimeoLink = $video_data['body']['link'];
                                     $this->VimeoEmbed = $video_data['body']['embed']['html'];
                                 }
@@ -89,6 +96,7 @@ class VimeoVideoFile extends VideoFile {
          
     }
 
+<<<<<<< HEAD
     public function getVimeoURI () {
         return $this->getField('VimeoURI');
     }
@@ -99,6 +107,10 @@ class VimeoVideoFile extends VideoFile {
     
     public function getEmbed () {
         return $this->getField('VimeoEmbed');
+=======
+    public function getVimeoID () {
+        return $this->getField('VimeoID');
+>>>>>>> babe4c5d6623546eec3739573529fada4e07f35f
     }
     
     public function createEmbed ($width, $height) {
