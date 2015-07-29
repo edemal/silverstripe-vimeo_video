@@ -34,7 +34,7 @@ class VimeoVideoFile extends VideoFile {
                             // TODO Generate Access Token
                         }
                         else {
-                            $lib = new \Vimeo\Vimeo(VIMEO_CLIENT_ID, VIMEO_SECRET_ID, VIMEO_ACCESS_TOKEN);
+                            $lib = new \Vimeo\Vimeo($clientID, $clientSecret, $accessToken);
                             
                             // upload via URL
                             //$response = $lib->request('/me/videos',array("type" => "pull", "link" => $this->getAbsoluteURL()),"PUT");
