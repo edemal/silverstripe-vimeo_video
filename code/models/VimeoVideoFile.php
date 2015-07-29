@@ -2,16 +2,11 @@
 
 class VimeoVideoFile extends VideoFile {
 
-    /*
-    private static $clientID = false;
-    private static $clientSecret = false;
-    private static $accessToken = false;
-    */
-
-    // Dev
-    private static $clientID = "a38c8e49c9a64a1d747bf51ac10f7286b44607b1" ;
-    private static $clientSecret = "n38gmL23asIlJ2JSPigVlakmR7TM0qnmiz2nOGwYtFupavpnpf7uHmigFBEleEfOwRkiBSWzMrB8vWPWaEOinZZNhX/zMty15wkpsAxrpVMUNcH0czDL4wVDqpblooMM";
-    private static $accessToken = "23c371cee42c5f9f5a6a46c8b7f17728";
+    
+    private static $clientID = VIMEO_CLIENT_ID;
+    private static $clientSecret = VIMEO_SECRET_ID;
+    private static $accessToken = VIMEO_ACCESS_TOKEN;
+    
 
     private static $db = array(
         
