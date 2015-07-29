@@ -34,24 +34,34 @@ class VimeoVideoFile extends VideoFile {
                             // TODO Generate Access Token
                         }
                         else {
-                            $lib = new \Vimeo\Vimeo($clientID, $clientSecret, $accessToken);
+                            $lib = new \Vimeo\Vimeo(self::$clientID, self::$clientSecret, self::$accessToken);
                             
                             // upload via URL
                             //$response = $lib->request('/me/videos',array("type" => "pull", "link" => $this->getAbsoluteURL()),"PUT");
                             
                             try {
                                 // Send a request to vimeo for uploading the new video
-                                $uri = $lib->upload($this->getFullPath(), false);
+                                //$uri = $lib->upload($this->getFullPath(), false);
                                 
+                                $uri = "/videos/134828131";
                                 $video_data = $lib->request($uri);
                                 
+                                $link = '';
+                                
                                 if($video_data['status'] == 200) {
+                                    // Example: /videos/134828131
                                     $this->VimeoURI = $video_data['body']['uri'];
+                                    
+                                    // Example: https://vimeo.com/134828131
                                     $this->VimeoLink = $video_data['body']['link'];
+                                    
+                                    // Example: <iframe src="https://player.vimeo.com/video/134828131?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0" width="400" height="300" frameborder="0" title="Untitled" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
                                     $this->VimeoEmbed = $video_data['body']['embed']['html'];
+                                    
+                                    $this->VimeoSDLink = $video_data['body']['download'][0]['link'];
                                 }
                                 
-                                $uploaded = array('file' => $this->getFullPath(), 'api_video_uri' => $uri, 'link' => $this->VimeoLink , 'embed' => $this->VimeoEmbed);
+                                $uploaded = array('file' => $this->getFullPath(), 'api_video_uri' => $uri, 'link' => $this->VimeoLink , 'embed' => $this->VimeoEmbed, 'body' => $video_data['body']);
                                  
                             } catch (\Vimeo\Exceptions\VimeoUploadException $ex) {
                                 $error = $ex->getMessage();
@@ -71,6 +81,7 @@ class VimeoVideoFile extends VideoFile {
                         $Message.= "\n uri: ".$uploaded['api_video_uri']."\n";
                         $Message.= "\n link: ".$uploaded['link']."\n";
                         $Message.= "\n embed: ".$uploaded['embed']."\n";
+                        $Message.= "\n body: ".print_r($uploaded['body'],true)."\n";
                     }
                     
                     file_put_contents($LogFile, $Message, FILE_APPEND | LOCK_EX);
