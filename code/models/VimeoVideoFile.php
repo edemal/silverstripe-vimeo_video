@@ -3,9 +3,33 @@
 class VimeoVideoFile extends VideoFile {
 
     
-    private static $clientID = VIMEO_CLIENT_ID;
-    private static $clientSecret = VIMEO_SECRET_ID;
-    private static $accessToken = VIMEO_ACCESS_TOKEN;
+    private static $clientID = null;
+    private static $clientSecret = null;
+    private static $accessToken = null;
+        
+    public static function set_vimeo_client_id($id){
+		self::$clientID = $id;
+    }
+        
+    public static function get_vimeo_client_id(){
+		return self::$clientID;
+    }
+        
+    public static function set_vimeo_client_secret($secret){
+		self::$clientSecret = $secret;
+    }
+        
+    public static function get_vimeo_client_secret(){
+		return self::$clientSecret;
+    }
+        
+    public static function set_vimeo_access_token($token){
+		self::$accessToken = $token;
+    }
+        
+    public static function get_vimeo_access_token(){
+		return self::$accessToken;
+    }
     
 
     private static $db = array(
@@ -28,13 +52,13 @@ class VimeoVideoFile extends VideoFile {
                     $uploaded = [];
                     $error = false;
                     
-                    if (self::$clientID && self::$clientSecret) {
-                        if (!self::$accessToken) {
+                    if (self::get_vimeo_client_id() && self::get_vimeo_client_secret()) {
+                        if (!self::get_vimeo_access_token()) {
                             $error = "Missing access token";
                             // TODO Generate Access Token
                         }
                         else {
-                            $lib = new \Vimeo\Vimeo($clientID, $clientSecret, $accessToken);
+                            $lib = new \Vimeo\Vimeo(self::get_vimeo_client_id(), self::get_vimeo_client_secret(), self::get_vimeo_access_token());
                             
                             // upload via URL
                             //$response = $lib->request('/me/videos',array("type" => "pull", "link" => $this->getAbsoluteURL()),"PUT");
@@ -103,16 +127,6 @@ class VimeoVideoFile extends VideoFile {
     public function createEmbed ($width, $height) {
         $width = (!$width) ? $width : $this->Width;
         $height = (!$height) ? $height : $this->Height;
-        
-        
-        
     }
-
-    public function setAccessToken($access_token) {
-        self::$accessToken = $access_token;
-    }
-
-
-
 
 }
