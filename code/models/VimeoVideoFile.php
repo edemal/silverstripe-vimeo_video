@@ -26,10 +26,11 @@ class VimeoVideoFile extends VideoFile {
 
                     $lib = false;
                     $uploaded = [];
+                    $error = false;
                     
                     if (self::$clientID && self::$clientSecret) {
                         if (!self::$accessToken) {
-                            print 'Error: missing accessToken';
+                            $error = "Missing access token";
                             // TODO Generate Access Token
                         }
                         else {
@@ -59,17 +60,18 @@ class VimeoVideoFile extends VideoFile {
                             }
                         }
                     } else {
-                        //todo log missing Client_ID or Secret_ID
+                        $error = "Missing clientID or clientSecret";
                     }
                     
-                    
-                    
-                             
-                    $Message = "[LOGTIME: ".date("Y-m-d H:i:s")."]\nFile uploaded to Vimeo\n";
-                    $Message.= "\n Upload info: \n";
-                    $Message.= "\n uri: ".$uploaded['api_video_uri']."\n";
-                    $Message.= "\n link: ".$uploaded['link']."\n";
-                    $Message.= "\n embed: ".$uploaded['embed']."\n";
+                    if ($error) {
+                        $Message = "[LOGTIME: ".date("Y-m-d H:i:s")."]\n".$error."\n";
+                    } else {
+                        $Message = "[LOGTIME: ".date("Y-m-d H:i:s")."]\nFile uploaded to Vimeo\n";
+                        $Message.= "\n Upload info: \n";
+                        $Message.= "\n uri: ".$uploaded['api_video_uri']."\n";
+                        $Message.= "\n link: ".$uploaded['link']."\n";
+                        $Message.= "\n embed: ".$uploaded['embed']."\n";
+                    }
                     
                     file_put_contents($LogFile, $Message, FILE_APPEND | LOCK_EX);
                     
@@ -101,6 +103,7 @@ class VimeoVideoFile extends VideoFile {
     public function createEmbed ($width, $height) {
         $width = (!$width) ? $width : $this->Width;
         $height = (!$height) ? $height : $this->Height;
+        
         
         
     }
