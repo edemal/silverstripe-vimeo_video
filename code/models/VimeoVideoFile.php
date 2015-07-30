@@ -158,6 +158,8 @@ class VimeoVideoFile extends VideoFile {
         
         $video_data = $lib->request($this->VimeoURI);
         
+        $this->SDLink = $video_data['body']['files'][0]['link'];
+        
         return $video_data['body']['files'][0]['link'];
         
         //return $this->getField('SDLink');
@@ -176,6 +178,8 @@ class VimeoVideoFile extends VideoFile {
         $lib = new \Vimeo\Vimeo(self::get_vimeo_client_id(), self::get_vimeo_client_secret(), self::get_vimeo_access_token());
         
         $video_data = $lib->request($this->VimeoURI);
+        
+        
         
         return $video_data['body']['stats']['plays'];
     }
