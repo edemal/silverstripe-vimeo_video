@@ -20,4 +20,4 @@ Add Vimeo Credentials to your _ss_environment.php
 
 define('VIMEO_CLIENT_ID', 'YOUR_CLIENT_ID');
 define('VIMEO_CLIENT_SECRET', 'YOUR_CLIENT_SECRET');
-define('VIMEO_CLIENT_ACCESS_TOKEN', 'YOUR_ACCESS_TOKEN');
+define('VIMEO_ACCESS_TOKEN', 'YOUR_ACCESS_TOKEN');
