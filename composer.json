@@ -1,5 +1,5 @@
 {
-	"name": "eduardma-silverstripe/vimeovideo",
+	"name": "eduardma-silverstripe/vimeo_video",
 	"type": "silverstripe-module",
 	"description": "Vimeo Video Extension",
 	"license": "BSD-3-Clause",
@@ -14,7 +14,7 @@
 		"php": ">=5.3.2",
 		"composer/installers": "*",
         "php-ffmpeg/php-ffmpeg": "0.6.0",
-        "andrelohmann-silverstripe/extendedobjects": "1.8",
+        "andrelohmann-silverstripe/extendedobjects": "1.10",
         "vimeo/vimeo-api": "1.2.3"
 	},
 	"minimum-stability": "stable"
