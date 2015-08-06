@@ -26,7 +26,7 @@ Add Vimeo Credentials to your _ss_environment.php
 
 Use the following method to get the ids of your albums and presets
 
-´´´
+```
 curl -X GET -H "Authorization: bearer VIMEO_ACCESS_TOKEN" https://api.vimeo.com/me/albums
 curl -X GET -H "Authorization: bearer VIMEO_ACCESS_TOKEN" https://api.vimeo.com/me/presets
-´´´
+```
