@@ -9,6 +9,7 @@ class VimeoVideoFile extends VideoFile {
 	private static $api_request_time = 900;
 	
 	private static $album_id = null;
+	private static $preset_id = null;
     
 	/**
 	 * @config
@@ -272,10 +273,13 @@ class VimeoVideoFile extends VideoFile {
 						
 						$this->extractUrls($video_data);
 						
-						// Set Title and Album
+						// Set Title, Album and player preset
 						$lib->request($this->VimeoURI, array('name' => $this->Name), 'PATCH');
 						if(Config::inst()->get('VimeoVideoFile', 'album_id')){
 							$res = $lib->request('/me/albums/'.Config::inst()->get('VimeoVideoFile', 'album_id').$this->VimeoURI, array(), 'PUT');
+						}
+						if(Config::inst()->get('VimeoVideoFile', 'preset_id')){
+							$res = $lib->request($this->VimeoURI.'/presets/'.Config::inst()->get('VimeoVideoFile', 'preset_id'), array(), 'PUT');
 						}
 					break;
 				}
