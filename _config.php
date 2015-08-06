@@ -2,8 +2,7 @@
 
 if(defined('VIMEO_CLIENT_ID') && defined('VIMEO_CLIENT_SECRET') && defined('VIMEO_ACCESS_TOKEN')){
     
-    Config::inst()->update('VimeoVideoFile', 'channel_id', VIMEO_CHANNEL_ID);
-	Config::inst()->update('VimeoVideoFile', 'client_id', VIMEO_CLIENT_ID);
+    Config::inst()->update('VimeoVideoFile', 'client_id', VIMEO_CLIENT_ID);
 	Config::inst()->update('VimeoVideoFile', 'client_secret', VIMEO_CLIENT_SECRET);
 	Config::inst()->update('VimeoVideoFile', 'access_token', VIMEO_ACCESS_TOKEN);
 	
