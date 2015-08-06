@@ -21,3 +21,4 @@ Add Vimeo Credentials to your _ss_environment.php
 define('VIMEO_CLIENT_ID', 'YOUR_CLIENT_ID');
 define('VIMEO_CLIENT_SECRET', 'YOUR_CLIENT_SECRET');
 define('VIMEO_ACCESS_TOKEN', 'YOUR_ACCESS_TOKEN');
+define('VIMEO_ALBUM_ID', 'YOUR_ALBUM_ID'); // optional, put every uploaded video in to a defined album
