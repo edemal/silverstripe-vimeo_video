@@ -14,7 +14,7 @@
 		"php": ">=5.3.2",
 		"composer/installers": "*",
         "php-ffmpeg/php-ffmpeg": "0.6.0",
-        "andrelohmann-silverstripe/extendedobjects": "1.10",
+        "andrelohmann-silverstripe/extendedobjects": "1.11",
         "vimeo/vimeo-api": "1.2.3"
 	},
 	"minimum-stability": "stable"
