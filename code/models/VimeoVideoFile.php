@@ -174,7 +174,7 @@ class VimeoVideoFile extends VideoFile {
 	
 	protected function extractUrls($data){
 		// if status is "available", we need to check if allready all resolution files are really available
-		if($data['body']['status'] == 'available'){
+		if(isset($data['body']) && aisset($data['body']['status']) && $data['body']['status'] == 'available'){
 			// fetch source resolution
 			$sourceMeasures = array();
 			foreach($data['body']['download'] as $dl){
