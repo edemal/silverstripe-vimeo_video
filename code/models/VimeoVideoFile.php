@@ -354,7 +354,7 @@ class VimeoVideoFile extends VideoFile {
 	public function setPreviewImage(SecureImage $Img){
 		
 		if(!($this->PreviewImage() instanceof VideoImage)){
-			$this->PreviewImage()->delete();
+			if($this->PreviewImageID > 0 && $this->PreviewImage()) $this->PreviewImage()->delete();
 		}
 		$this->PreviewImageID = $Img->ID;
 		
