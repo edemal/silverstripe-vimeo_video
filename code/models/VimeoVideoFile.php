@@ -9,6 +9,7 @@ class VimeoVideoFile extends VideoFile {
 	private static $api_request_time = 900;
 	
 	private static $album_id = null;
+	private static $preset_id = null;
     
 	/**
 	 * @config
@@ -46,7 +47,10 @@ class VimeoVideoFile extends VideoFile {
     );
 	
 	protected function getLogFile(){
-		return TEMP_FOLDER.'/VimeoVideoFileProcessing-ID-'.$this->ID.'-'.md5($this->getRelativePath()).'.log';
+		if(!$this->log_file){
+			$this->log_file = TEMP_FOLDER.'/VimeoVideoFileProcessing-ID-'.$this->ID.'-'.md5($this->getRelativePath()).'.log';
+		}
+		return $this->log_file;
 	}
 
     public function process($LogFile = false, $runAfterProcess = true) {
@@ -78,8 +82,7 @@ class VimeoVideoFile extends VideoFile {
 		
 	protected function vimeoProcess($LogFile, $runAfterProcess = true){
 		
-		$Message = "[LOGTIME: ".date("Y-m-d H:i:s")."]\nvimeoPress() started\n";
-		file_put_contents($LogFile, $Message, FILE_APPEND | LOCK_EX);
+		$this->appendLog($LogFile, "vimeoPress() started");
 		
 		switch($this->VimeoProcessingStatus){
 			case 'unprocessed':
@@ -117,8 +120,7 @@ class VimeoVideoFile extends VideoFile {
 		
 		try {
 			
-			$Message = "[LOGTIME: ".date("Y-m-d H:i:s")."]\nvimeoUpload() started\n";
-			file_put_contents($LogFile, $Message, FILE_APPEND | LOCK_EX);
+			$this->appendLog($LogFile, "vimeoUpload() started");
 			
 			if($lib = new \Vimeo\Vimeo(Config::inst()->get('VimeoVideoFile', 'client_id'), Config::inst()->get('VimeoVideoFile', 'client_secret'), Config::inst()->get('VimeoVideoFile', 'access_token'))){
 				// Send a request to vimeo for uploading the new video
@@ -126,8 +128,7 @@ class VimeoVideoFile extends VideoFile {
 				//$uri = "/videos/134840586";
 				$video_data = $lib->request($uri);
 				
-				$Message = "[LOGTIME: ".date("Y-m-d H:i:s")."]\nVimeo Video Data returned\n".print_r($video_data, true)."\n\n";
-				file_put_contents($LogFile, $Message, FILE_APPEND | LOCK_EX);
+				$this->appendLog($LogFile, "Vimeo Video Data returned", print_r($video_data, true));
 				
 				if($video_data['status'] == 200){
 					$this->VimeoURI = $video_data['body']['uri'];
@@ -136,8 +137,7 @@ class VimeoVideoFile extends VideoFile {
 					$this->VimeoID = $id[count($id)-1];
 					$this->write();
 					
-					$Message = "[LOGTIME: ".date("Y-m-d H:i:s")."]\nFile uploaded to Vimeo\n";
-					file_put_contents($LogFile, $Message, FILE_APPEND | LOCK_EX);
+					$this->appendLog($LogFile, "File uploaded to Vimeo");
 
 					if($video_data['body']['status'] != 'available'){
 						$this->VimeoProcessingStatus = 'processing';
@@ -148,11 +148,7 @@ class VimeoVideoFile extends VideoFile {
 					}
 					
 				} else {
-					$error = "Error in Upload";
-					$Message = "[LOGTIME: ".date("Y-m-d H:i:s")."]\n".$error."\n";
-					$Message.= print_r($video_data, true)."\n\n";
-					
-					file_put_contents($LogFile, $Message, FILE_APPEND | LOCK_EX);
+					$this->appendLog($LogFile, "Error in Upload", print_r($video_data, true));
 					
 					$this->VimeoProcessingStatus = 'unprocessed';
 					$this->write();
@@ -160,22 +156,17 @@ class VimeoVideoFile extends VideoFile {
 				}
 			
             } else {
-				$error = "Missing clientID or clientSecret";
-                $Message = "[LOGTIME: ".date("Y-m-d H:i:s")."]\n".$error."\n";
-				
-				file_put_contents($LogFile, $Message, FILE_APPEND | LOCK_EX);
+				$this->appendLog($LogFile, "Missing clientID or clientSecret");
 				
 				$this->VimeoProcessingStatus = 'unprocessed';
 				$this->write();
 				return false; 
 			}
-		} catch(\Vimeo\Exceptions\VimeoRequestException $ex) {
-			$Message = "[LOGTIME: ".date("Y-m-d H:i:s")."]\n".$ex."\n";
-			file_put_contents($LogFile, $Message, FILE_APPEND | LOCK_EX);
+		} catch(\Vimeo\Exceptions\VimeoRequestException $e) {
+			$this->appendLog($LogFile, $e->getMessage());
 			return false;
-		} catch (\Vimeo\Exceptions\VimeoUploadException $ex) {
-			$Message = "[LOGTIME: ".date("Y-m-d H:i:s")."]\n".$ex."\n";
-			file_put_contents($LogFile, $Message, FILE_APPEND | LOCK_EX);
+		} catch (\Vimeo\Exceptions\VimeoUploadException $e) {
+			$this->appendLog($LogFile, $e->getMessage());
 			return false;
 		}
          
@@ -183,7 +174,7 @@ class VimeoVideoFile extends VideoFile {
 	
 	protected function extractUrls($data){
 		// if status is "available", we need to check if allready all resolution files are really available
-		if($data['body']['status'] == 'available'){
+		if(isset($data['body']) && isset($data['body']['status']) && $data['body']['status'] == 'available'){
 			// fetch source resolution
 			$sourceMeasures = array();
 			foreach($data['body']['download'] as $dl){
@@ -266,16 +257,24 @@ class VimeoVideoFile extends VideoFile {
 					break;
 				
 					case 'processing':
+						
+						$this->appendLog($this->getLogFile(), 'IsProcessed - processing');
+						
 						$lib = new \Vimeo\Vimeo(Config::inst()->get('VimeoVideoFile', 'client_id'), Config::inst()->get('VimeoVideoFile', 'client_secret'), Config::inst()->get('VimeoVideoFile', 'access_token'));
 						// Send a request to vimeo for uploading the new video
 						$video_data = $lib->request($this->VimeoURI);
 						
 						$this->extractUrls($video_data);
 						
-						// Set Title and Album
+						// Set Title, Album and player preset
 						$lib->request($this->VimeoURI, array('name' => $this->Name), 'PATCH');
 						if(Config::inst()->get('VimeoVideoFile', 'album_id')){
 							$res = $lib->request('/me/albums/'.Config::inst()->get('VimeoVideoFile', 'album_id').$this->VimeoURI, array(), 'PUT');
+							$this->appendLog($this->getLogFile(), 'Updated Album', print_r($res, true));
+						}
+						if(Config::inst()->get('VimeoVideoFile', 'preset_id')){
+							$res = $lib->request($this->VimeoURI.'/presets/'.Config::inst()->get('VimeoVideoFile', 'preset_id'), array(), 'PUT');
+							$this->appendLog($this->getLogFile(), 'Updated Player Preset', print_r($res, true));
 						}
 					break;
 				}
@@ -350,13 +349,15 @@ class VimeoVideoFile extends VideoFile {
 	public function setPreviewImage(SecureImage $Img){
 		
 		if(!($this->PreviewImage() instanceof VideoImage)){
-			$this->PreviewImage()->delete();
+			if($this->PreviewImageID > 0 && $this->PreviewImage()) $this->PreviewImage()->delete();
 		}
 		$this->PreviewImageID = $Img->ID;
 		
 		$lib = new \Vimeo\Vimeo(Config::inst()->get('VimeoVideoFile', 'client_id'), Config::inst()->get('VimeoVideoFile', 'client_secret'), Config::inst()->get('VimeoVideoFile', 'access_token'));
         
-        $video_data = $lib->uploadImage($this->VimeoURI.'/pictures', $Img->getFullPath(), true); // Upload the PreviewPicture as Default
+        $video_data = $lib->uploadImage($this->VimeoURI.'/pictures', $Img->getFullPath(), true); // Upload the PreviewPicture as 
+		
+		$this->appendLog($this->getLogFile(), 'New Image uploaded', print_r($video_data, true));
 		
 		$this->write();
 		
